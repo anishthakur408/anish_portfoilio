@@ -14,27 +14,52 @@ class PortfolioApp extends StatelessWidget {
     return MaterialApp(
       title: 'Anish Portfolio',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(), // Use dark theme only
+      theme: ThemeData.dark(),
       home: const HomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Offset _mousePos = Offset.zero;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: SingleChildScrollView(
-        child: Column(
-          children: const [
-            NavBar(),
-            HeroSection(),
-            SkillsSection(),
-            ProjectSection(),
-            Footer(),
+      body: MouseRegion(
+        onHover: (event) {
+          setState(() {
+            _mousePos = event.position;
+          });
+        },
+        child: Stack(
+          children: [
+            // Animated Background
+            Positioned.fill(
+              child: CustomPaint(
+                painter: BackgroundPainter(_mousePos),
+              ),
+            ),
+
+            // Main Content
+            SingleChildScrollView(
+              child: Column(
+                children: const [
+                  NavBar(),
+                  HeroSection(),
+                  SkillsSection(),
+                  ProjectSection(),
+                  Footer(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -42,6 +67,34 @@ class HomePage extends StatelessWidget {
   }
 }
 
+
+/// 🎨 Background Painter for glowing cursor
+class BackgroundPainter extends CustomPainter {
+  final Offset mousePos;
+  BackgroundPainter(this.mousePos);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..shader = RadialGradient(
+        colors: [
+          Colors.white30.withOpacity(0.3),
+          Colors.white12.withOpacity(0.15),
+          Colors.transparent,
+        ],
+        radius: 0.35,
+      ).createShader(Rect.fromCircle(center: mousePos, radius: 1000));
+
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant BackgroundPainter oldDelegate) {
+    return oldDelegate.mousePos != mousePos;
+  }
+}
+
+// ---------------------- NAVBAR ----------------------
 class NavBar extends StatelessWidget {
   const NavBar({super.key});
 
@@ -65,10 +118,6 @@ class NavBar extends StatelessWidget {
           ),
           Row(
             children: [
-              // IconButton(
-              //   icon: const FaIcon(FontAwesomeIcons.instagram, color: Colors.white),
-              //   onPressed: () => _launchURL("https://www.instagram.com/anish_.thakur"),
-              // ),
               IconButton(
                 icon: const FaIcon(FontAwesomeIcons.github, color: Colors.white),
                 onPressed: () => _launchURL("https://github.com/anishthakur408"),
@@ -81,7 +130,6 @@ class NavBar extends StatelessWidget {
                 icon: const FaIcon(FontAwesomeIcons.xTwitter, color: Colors.white),
                 onPressed: () => _launchURL("https://x.com/anishthakur401"),
               ),
-              // Add more icons
             ],
           ),
         ],
@@ -90,6 +138,7 @@ class NavBar extends StatelessWidget {
   }
 }
 
+// ---------------------- HERO SECTION ----------------------
 class HeroSection extends StatelessWidget {
   const HeroSection({super.key});
 
@@ -115,7 +164,7 @@ class HeroSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset(
-                "assets/profile.png", // FIXED: added asset path
+                "assets/profile.png",
                 height: 250,
               ),
               const SizedBox(height: 40),
@@ -163,6 +212,7 @@ class HeroSection extends StatelessWidget {
   }
 }
 
+// ---------------------- SKILLS SECTION ----------------------
 class SkillsSection extends StatelessWidget {
   const SkillsSection({super.key});
 
@@ -234,6 +284,7 @@ class SkillCard extends StatelessWidget {
   }
 }
 
+// ---------------------- PROJECTS SECTION ----------------------
 class ProjectSection extends StatelessWidget {
   const ProjectSection({super.key});
 
@@ -270,16 +321,6 @@ class ProjectSection extends StatelessWidget {
                     description: "A Flutter app to track daily expenses and manage budgets and add incomes.",
                     link: "https://github.com/anishthakur408/anish-portfolio",
                   ),
-                  // ProjectCard(
-                  //   title: "Weather App",
-                  //   description: "A weather app using Flutter and OpenWeatherMap API.",
-                  //   link: "https://github.com/anishthakur408/weather-app",
-                  // ),
-                  // ProjectCard(
-                  //   title: "Python Automation",
-                  //   description: "Scripts to automate daily tasks using Python.",
-                  //   link: "https://github.com/anishthakur408/python-automation",
-                  // ),
                 ],
               ),
             ],
@@ -336,6 +377,7 @@ class ProjectCard extends StatelessWidget {
   }
 }
 
+// ---------------------- FOOTER ----------------------
 class Footer extends StatelessWidget {
   const Footer({super.key});
 
@@ -393,6 +435,7 @@ class Footer extends StatelessWidget {
   }
 }
 
+// ---------------------- CONTACT FORM ----------------------
 class ContactForm extends StatefulWidget {
   const ContactForm({super.key});
 
