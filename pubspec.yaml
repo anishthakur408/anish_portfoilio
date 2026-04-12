@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   font_awesome_flutter: ^10.4.0
   url_launcher: ^6.1.7
+  http: ^0.13.6
   animated_text_kit: ^4.2.2
   flutter_animate: ^4.3.0
   cupertino_icons: ^1.0.8
@@ -24,6 +25,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
   assets:
-    - assets/profile.png
+#    - assets/profile.png
